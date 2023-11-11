@@ -2,13 +2,13 @@
 An authentication as a service provider made using express and postgresql. This project aims to showcase my skills in backend development.
 
 # Project Planning
-- [] `/signup`
+- [ ] `/signup`
 for signing up a new user or a new client
-- [] `/login`
+- [ ] `/login`
 for logging in a user or a client
-- [] `/options`
+- [ ] `/options`
 for getting the login options of a specified user
-- [] `/redirect`
+- [ ] `/redirect`
 fetches the redirect url of the specified user
 
 # Design Decisions
