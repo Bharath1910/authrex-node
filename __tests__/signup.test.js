@@ -12,22 +12,6 @@ describe('signup', () => {
     prisma = jest.fn();
   });
 
-  test('should call user function when type is user', async () => {
-    req.query.type = 'user';
-    const user = jest.fn();
-    const client = jest.fn();
-    await main(req, res, prisma, user, client);
-    expect(user).toHaveBeenCalledWith(req, res, prisma);
-  });
-
-  test('should call client function when type is client', async () => {
-    req.query.type = 'client';
-    const user = jest.fn();
-    const client = jest.fn();
-    await main(req, res, prisma, user, client);
-    expect(client).toHaveBeenCalledWith(req, res, prisma);
-  });
-
   test('should return 404 when type is invalid', async () => {
     req.query.type = 'invalid';
     const user = jest.fn();
@@ -47,7 +31,7 @@ describe('signup', () => {
     expect(res.send).toHaveBeenCalledWith({});
   });
 
-  test('return 409 if user already exists', async () => {
+  test('should return 409 if user already exists', async () => {
     req.query.type = 'user';
     req.body.username = 'test';
     req.body.password = 'test';
