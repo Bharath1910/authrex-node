@@ -2,28 +2,28 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model users {
-    id        String   @id @default(uuid())
-    username  String
-    password  String
-    client    clients  @relation(fields: [clientsId], references: [id])
-    methods   String[]
-    clientsId String
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  client    clients  @relation(fields: [clientsId], references: [id])
+  methods   String[]
+  clientsId String
 }
 
 model clients {
-    id       String  @id @default(uuid())
-    username String?
-    password String?
-    pgp      String?
-    token    String?
-    users    users[]
+  id       String  @id @default(uuid())
+  username String? @unique
+  password String?
+  pgp      String?
+  token    String?
+  users    users[]
 }
