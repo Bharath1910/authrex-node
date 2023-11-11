@@ -7,9 +7,26 @@ const {StatusCodes} = require('http-status-codes');
 /**
  * @param {express.Request} req
  * @param {express.Response} res
- * @param {prisma.PrismaClient} prisma
+ * @param {prisma} prisma
  */
 async function user(req, res, prisma) {
+  const {username, password} = req.body;
+  if (!username || !password) {
+    res.status(StatusCodes.BAD_REQUEST).send({});
+    return;
+  }
+
+  const user = await prisma.users.findUnique({
+    where: {username},
+  });
+
+  if (user) {
+    res.status(StatusCodes.CONFLICT).send({});
+    return;
+  }
+
+  const newUser = await prisma.users.create({data: {username, password}});
+  res.status(StatusCodes.OK).send({id: newUser.id});
 };
 
 /**
@@ -17,7 +34,7 @@ async function user(req, res, prisma) {
  * @param {express.Response} res
  * @param {prisma.PrismaClient} prisma
  */
-async function customer(req, res, prisma) {
+async function client(req, res, prisma) {
 };
 
 /**
@@ -32,7 +49,7 @@ async function main(req, res, prisma, user, customer) {
   if (type === 'user') {
     await user(req, res, prisma);
     return;
-  } else if (type === 'customer') {
+  } else if (type === 'client') {
     await customer(req, res, prisma);
     return;
   } else {
@@ -46,7 +63,7 @@ async function main(req, res, prisma, user, customer) {
  * @param {prisma.PrismaClient} prisma
  */
 async function execute(req, res, prisma) {
-  await main(req, res, prisma, user, customer);
+  await main(req, res, prisma, user, client);
 }
 
-module.exports = {main, user, customer, execute};
+module.exports = {main, user, client, execute};
