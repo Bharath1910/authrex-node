@@ -11,10 +11,10 @@ datasource db {
 }
 
 model users {
-  id        String   @id @default(uuid())
-  username  String   @unique
+  id        String    @id @default(uuid())
+  username  String    @unique
   password  String
-  client    clients? @relation(fields: [clientsId], references: [id])
+  client    clients[]
   methods   String[]
   clientsId String?
 }
@@ -25,5 +25,6 @@ model clients {
   password String?
   pgp      String?
   token    String?
-  users    users[]
+  users    users?  @relation(fields: [usersId], references: [id])
+  usersId  String?
 }
