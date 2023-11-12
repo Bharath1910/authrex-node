@@ -14,7 +14,7 @@ const bcrypt = require('bcrypt');
 async function main(req, res, prisma) {
   const type = req.query.type;
   if (type === 'user') {
-    await user(req, res, prisma, bcrypt);
+    await user(req, res, prisma, bcrypt, jwt);
     return;
   } else if (type === 'client') {
     await client(req, res, prisma);
@@ -30,8 +30,9 @@ async function main(req, res, prisma) {
  * @param {express.Response} res
  * @param {prisma} prisma
  * @param {bcrypt} bcrypt
+ * @param {jwt} jwt
  */
-async function user(req, res, prisma, bcrypt) {
+async function user(req, res, prisma, bcrypt, jwt) {
   const {username, password} = req.body;
   if (!username || !password) {
     res.status(StatusCodes.BAD_REQUEST).send({});

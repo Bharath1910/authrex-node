@@ -1,6 +1,5 @@
 on:
   pull_request:
-  push:
 permissions:
   contents: read
   actions: read
@@ -21,4 +20,4 @@ jobs:
           name: JEST Tests            # Name of the check run which will be created
           path: junit.xml    # Path to test results
           reporter: jest-junit        # Format of test results
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
