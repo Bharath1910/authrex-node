@@ -2,7 +2,7 @@
 An authentication as a service provider made using express and postgresql. This project aims to showcase my skills in backend development.
 
 # Project Planning
-- [ ] `/signup`
+- [x] `/signup`
 for signing up a new user or a new client
 - [ ] `/login`
 for logging in a user or a client

@@ -50,18 +50,6 @@ async function client(req, res, prisma) {
   }
 
   try {
-    // await prisma.users.update({
-    //   where: {id: req.user.id},
-    //   data: {
-    //     client: {
-    //       create: {
-    //         username,
-    //         password,
-    //       },
-    //     },
-    //   },
-    // });
-
     await prisma.clients.create({
       data: {
         username,
