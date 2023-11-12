@@ -3,3 +3,4 @@ package-lock.json
 /prisma/migrations
 .env
 /coverage
+junit.xml
