@@ -22,6 +22,6 @@ fetches the redirect url of the specified user
 
 `/signup?type={user,client}` has two types of users: `user` and `client`. A user is a person who wants to use the product as a service. A client is a person who uses the user's service. For example, a user can be a company and clients can be the users of the company.
 
-Implementing user type first since the project starts with a user signing up.
+Implementing user type first since the project starts with a user signing up. Signing up should create a new user, and returns a jwt token with the user's id and user's type.
 
-signing up shuold create a new user, and returns a jwt token with the user's id and user's type.
+Storing hashed passwords instead of plain text, this increases security. I have also salted every passwords before hashing to prevent any rainbow table attacks.  

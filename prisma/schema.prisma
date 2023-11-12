@@ -14,9 +14,9 @@ model users {
   id        String   @id @default(uuid())
   username  String   @unique
   password  String
-  client    clients  @relation(fields: [clientsId], references: [id])
+  client    clients? @relation(fields: [clientsId], references: [id])
   methods   String[]
-  clientsId String
+  clientsId String?
 }
 
 model clients {
