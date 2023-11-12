@@ -43,4 +43,24 @@ describe('signup', () => {
         .toHaveBeenCalledWith({where: {username: 'test'}});
     expect(res.status).toHaveBeenCalledWith(StatusCodes.CONFLICT);
   });
+
+  test('create a new user', async () => {
+    req.query.type = 'user';
+    req.body.username = 'test';
+    req.body.password = 'test';
+    const prisma = {users: {
+      findUnique: jest.fn(() => null),
+      create: jest.fn(() => {
+        return {id: 'test'};
+      }),
+    }};
+    const bcrypt = {genSalt: jest.fn(), hash: jest.fn()};
+
+    await user(req, res, prisma, bcrypt);
+    expect(bcrypt.genSalt).toHaveBeenCalledTimes(1);
+    expect(bcrypt.hash).toHaveBeenCalledTimes(1);
+
+    expect(prisma.users.create).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+  });
 });
