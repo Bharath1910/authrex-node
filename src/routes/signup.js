@@ -30,10 +30,11 @@ async function user(req, res, prisma, bcrypt) {
   const salt = await bcrypt.genSalt();
   const hashedPass = await bcrypt.hash(password, salt);
 
-  const newUser = await prisma.users.create({
+  await prisma.users.create({
     data: {username, password: hashedPass},
   });
-  res.status(StatusCodes.OK).send({id: newUser.id});
+
+  res.status(StatusCodes.NO_CONTENT).send();
 };
 
 /**
@@ -51,7 +52,7 @@ async function client(req, res, prisma) {
  * @param {function} user
  * @param {function} customer
  */
-async function main(req, res, prisma, user, customer) {
+async function main(req, res, prisma) {
   const type = req.query.type;
   if (type === 'user') {
     await user(req, res, prisma, bcrypt);
@@ -64,13 +65,5 @@ async function main(req, res, prisma, user, customer) {
   }
 };
 
-/**
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {prisma.PrismaClient} prisma
- */
-async function execute(req, res, prisma) {
-  await main(req, res, prisma, user, client);
-}
 
-module.exports = {main, user, client, execute};
+module.exports = {main, user, client};

@@ -1,6 +1,6 @@
 const express = require('express');
 const prisma = require('./utils/prisma');
-const {execute: signup} = require('./routes/signup');
+const {main: signup} = require('./routes/signup');
 
 const app = express();
 

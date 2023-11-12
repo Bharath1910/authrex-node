@@ -61,6 +61,6 @@ describe('signup', () => {
     expect(bcrypt.hash).toHaveBeenCalledTimes(1);
 
     expect(prisma.users.create).toHaveBeenCalledTimes(1);
-    expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT);
   });
 });
