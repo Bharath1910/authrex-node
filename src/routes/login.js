@@ -17,7 +17,7 @@ async function main(req, res, prisma) {
     await user(req, res, prisma, bcrypt, jwt);
     return;
   } else if (type === 'client') {
-    await client(req, res, prisma);
+    await client(req, res, prisma, bcrypt, jwt);
     return;
   } else {
     res.status(StatusCodes.BAD_REQUEST).send({});
@@ -58,5 +58,37 @@ async function user(req, res, prisma, bcrypt, jwt) {
   res.status(StatusCodes.OK).send({token});
 };
 
+/**
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {prisma} prisma
+ * @param {bcrypt} bcrypt
+ * @param {jwt} jwt
+ */
+async function client(req, res, prisma, bcrypt, jwt) {
+  const {username, password} = req.body;
+  if (!username || !password) {
+    res.status(StatusCodes.BAD_REQUEST).send({});
+    return;
+  }
 
-module.exports = {main, user};
+  const user = await prisma.clients.findUnique({
+    where: {username, usersId: req.user.id},
+  });
+
+  if (!user) {
+    res.status(StatusCodes.NOT_FOUND).send();
+    return;
+  }
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    res.status(StatusCodes.UNAUTHORIZED).send();
+    return;
+  }
+
+  const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
+  res.status(StatusCodes.OK).send({token});
+};
+
+module.exports = {main, user, client};
