@@ -25,3 +25,5 @@ fetches the redirect url of the specified user
 Implementing user type first since the project starts with a user signing up. Signing up should create a new user.Storing hashed passwords instead of plain text, this increases security. I have also salted every passwords before hashing to prevent any rainbow table attacks.
 
 Login route returns a JWT token which contains user id in it. This token is used for other route authentication. The token is signed usingg a secret key to avoid cookie tampering which can lead to unauthorized access.
+
+I decided to add a new middleware called `verifyUser` to check if the incoming api request from a client is linked to a real user or not. I decided to use a middleware because this process of verifying a valid user is done in multiple client routes.
