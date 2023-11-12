@@ -61,9 +61,11 @@ describe('login', () => {
         return {id: 1, password: 'test'};
       }),
     }};
+    const jwt = {sign: jest.fn(() => 'token')};
 
-    await user(req, res, prisma, bcrypt);
+    await user(req, res, prisma, bcrypt, jwt);
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+    expect(jwt.sign).toHaveBeenCalledTimes(1);
     expect(res.send).toHaveBeenCalledTimes(1);
   });
 });
