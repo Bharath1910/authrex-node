@@ -40,9 +40,46 @@ async function user(req, res, prisma, bcrypt) {
 /**
  * @param {express.Request} req
  * @param {express.Response} res
- * @param {prisma.PrismaClient} prisma
+ * @param {prisma} prisma
  */
 async function client(req, res, prisma) {
+  const {username, password} = req.body;
+  if (!username || !password) {
+    res.status(StatusCodes.BAD_REQUEST).send({});
+    return;
+  }
+
+  try {
+    // await prisma.users.update({
+    //   where: {id: req.user.id},
+    //   data: {
+    //     client: {
+    //       create: {
+    //         username,
+    //         password,
+    //       },
+    //     },
+    //   },
+    // });
+
+    await prisma.clients.create({
+      data: {
+        username,
+        password,
+        users: {
+          connect: {
+            id: req.user.id,
+          },
+        },
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(StatusCodes.CONFLICT).send({});
+    return;
+  }
+
+  res.status(StatusCodes.NO_CONTENT).send();
 };
 
 /**
@@ -58,7 +95,7 @@ async function main(req, res, prisma) {
     await user(req, res, prisma, bcrypt);
     return;
   } else if (type === 'client') {
-    await customer(req, res, prisma, bcrypt);
+    await client(req, res, prisma, bcrypt);
     return;
   } else {
     res.status(StatusCodes.BAD_REQUEST).send({});
