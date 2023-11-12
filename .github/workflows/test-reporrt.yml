@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3     # checkout the repo
-      - run: npm run ci``
+      - run: npm i
       - run: npm test                 # run tests (configured to use jest-junit reporter)
 
       - name: Test Report
@@ -19,6 +19,6 @@ jobs:
         if: success() || failure()    # run this step even if previous step failed
         with:
           name: JEST Tests            # Name of the check run which will be created
-          path: reports/jest-*.xml    # Path to test results
+          path: junit.xml    # Path to test results
           reporter: jest-junit        # Format of test results
           token: ${{ secrets.TOKEN }}

@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon ./src/index.js",
-    "ci": "npm i jest jest-junit"
+    "dev": "nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
