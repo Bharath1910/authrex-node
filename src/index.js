@@ -1,5 +1,6 @@
 const express = require('express');
 const prisma = require('./utils/prisma');
+const cors = require('cors');
 const {main: signup} = require('./routes/signup');
 const {main: login} = require('./routes/login');
 const {main: verifyUser} = require('./middleware/verify-user');
@@ -7,6 +8,7 @@ const verifyUserPwd = require('./middleware/verify-inputs');
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.post('/signup',
