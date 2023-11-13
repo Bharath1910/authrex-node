@@ -4,7 +4,7 @@ An authentication as a service provider made using express and postgresql. This 
 # Project Planning
 - [x] `/signup`
 for signing up a new user or a new client
-- [ ] `/login`
+- [x] `/login`
 for logging in a user or a client
 - [ ] `/options`
 for getting the login options of a specified user
