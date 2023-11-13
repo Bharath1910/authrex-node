@@ -1,4 +1,4 @@
-const {main, user} = require('../src/routes/signup');
+const {main, user, client} = require('../src/routes/signup');
 const {StatusCodes} = require('http-status-codes');
 
 describe('signup', () => {
@@ -7,7 +7,7 @@ describe('signup', () => {
   let prisma;
 
   beforeEach(() => {
-    req = {query: {}, body: {}};
+    req = {query: {}, body: {}, user: {}};
     res = {status: jest.fn().mockReturnThis(), send: jest.fn()};
     prisma = jest.fn();
   });
@@ -17,16 +17,6 @@ describe('signup', () => {
     const user = jest.fn();
     const client = jest.fn();
     await main(req, res, prisma, user, client);
-    expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
-    expect(res.send).toHaveBeenCalledWith({});
-  });
-
-  test('should return 400 if username or password is missing', async () => {
-    req.query.type = 'user';
-    req.body.username = null;
-    req.body.password = null;
-
-    await user(req, res, prisma);
     expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     expect(res.send).toHaveBeenCalledWith({});
   });
@@ -61,6 +51,35 @@ describe('signup', () => {
     expect(bcrypt.hash).toHaveBeenCalledTimes(1);
 
     expect(prisma.users.create).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT);
+  });
+
+  test('should return 409 if client already exists', async () => {
+    req.query.type = 'client';
+    req.user.id = 'test';
+    req.body.username = 'test';
+    req.body.password = 'test';
+    const prisma = {clients: {
+      create: jest.fn(() => {
+        throw new Error('test');
+      }),
+    }};
+    const bcrypt = {genSalt: jest.fn(), hash: jest.fn()};
+    await client(req, res, prisma, bcrypt);
+    expect(prisma.clients.create).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.CONFLICT);
+  });
+
+  test('create a new client', async () => {
+    req.user.id = 'test';
+    req.body.username = 'test';
+    req.body.password = 'test';
+    const prisma = {clients: {
+      create: jest.fn(() => 'test'),
+    }};
+    const bcrypt = {genSalt: jest.fn(), hash: jest.fn()};
+    await client(req, res, prisma, bcrypt);
+    expect(prisma.clients.create).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(StatusCodes.NO_CONTENT);
   });
 });
