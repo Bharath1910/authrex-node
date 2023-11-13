@@ -41,19 +41,23 @@ async function user(req, res, prisma, bcrypt) {
  * @param {express.Request} req
  * @param {express.Response} res
  * @param {prisma} prisma
+ * @param {bcrypt} bcrypt
  */
-async function client(req, res, prisma) {
+async function client(req, res, prisma, bcrypt) {
   const {username, password} = req.body;
   if (!username || !password) {
     res.status(StatusCodes.BAD_REQUEST).send({});
     return;
   }
 
+  const salt = await bcrypt.genSalt();
+  const hash = await bcrypt.hash(password, salt);
+
   try {
     await prisma.clients.create({
       data: {
         username,
-        password,
+        password: hash,
         users: {
           connect: {
             id: req.user.id,

@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 app.post('/signup', verifyUser(prisma), (req, res) => signup(req, res, prisma));
-app.post('/login', (req, res) => login(req, res, prisma));
+app.post('/login', verifyUser(prisma), (req, res) => login(req, res, prisma));
 app.get('/test', verifyUser(prisma), (req, res) => {
   console.log('test');
   res.send('test');
