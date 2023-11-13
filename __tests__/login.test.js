@@ -1,4 +1,4 @@
-const {main, user} = require('../src/routes/login');
+const {main, user, client} = require('../src/routes/login');
 const {StatusCodes} = require('http-status-codes');
 
 describe('login', () => {
@@ -6,7 +6,7 @@ describe('login', () => {
   let res;
 
   beforeEach(() => {
-    req = {query: {}, body: {}};
+    req = {query: {}, body: {}, user: {}};
     res = {status: jest.fn().mockReturnThis(), send: jest.fn()};
   });
 
@@ -64,6 +64,45 @@ describe('login', () => {
     const jwt = {sign: jest.fn(() => 'token')};
 
     await user(req, res, prisma, bcrypt, jwt);
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+    expect(jwt.sign).toHaveBeenCalledTimes(1);
+    expect(res.send).toHaveBeenCalledTimes(1);
+  });
+
+  test('should return 404 if client does not exist', async () => {
+    req.query.type = 'client';
+    req.body.username = 'test';
+    req.body.password = 'test';
+    req.user.id = 'test';
+
+    const prisma = {clients: {findUnique: jest.fn(() => null)}};
+    await client(req, res, prisma);
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+  });
+
+  test('should return 401 if password does not match', async () => {
+    req.query.type = 'client';
+    req.body.username = 'test';
+    req.body.password = 'test';
+
+    const prisma = {clients: {findUnique: jest.fn(() => 'test')}};
+    const bcrypt = {compare: jest.fn(() => false)};
+
+    await client(req, res, prisma, bcrypt);
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED);
+  });
+
+  test('should send token if validation was successful', async () => {
+    req.query.type = 'client';
+    req.body.username = 'test';
+    req.body.password = 'test';
+
+    const prisma = {clients: {findUnique: jest.fn(() => 'test')}};
+    const bcrypt = {compare: jest.fn(() => true)};
+    const jwt = {sign: jest.fn(() => 'token')};
+    await client(req, res, prisma, bcrypt, jwt);
+
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
     expect(jwt.sign).toHaveBeenCalledTimes(1);
     expect(res.send).toHaveBeenCalledTimes(1);
