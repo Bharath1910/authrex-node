@@ -13,10 +13,6 @@ const bcrypt = require('bcrypt');
  */
 async function user(req, res, prisma, bcrypt) {
   const {username, password} = req.body;
-  if (!username || !password) {
-    res.status(StatusCodes.BAD_REQUEST).send({});
-    return;
-  }
 
   const user = await prisma.users.findUnique({
     where: {username},
@@ -45,10 +41,6 @@ async function user(req, res, prisma, bcrypt) {
  */
 async function client(req, res, prisma, bcrypt) {
   const {username, password} = req.body;
-  if (!username || !password) {
-    res.status(StatusCodes.BAD_REQUEST).send({});
-    return;
-  }
 
   const salt = await bcrypt.genSalt();
   const hash = await bcrypt.hash(password, salt);

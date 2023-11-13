@@ -18,15 +18,6 @@ describe('login', () => {
     expect(res.send).toHaveBeenCalledWith({});
   });
 
-  test('should return 400 if username or password is missing', async () => {
-    req.body.username = null;
-    req.body.password = null;
-    const prisma = jest.fn();
-    await user(req, res, prisma);
-    expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
-    expect(res.send).toHaveBeenCalledWith({});
-  });
-
   test('should return 404 if user does not exist', async () => {
     req.body.username = 'test';
     req.body.password = 'test';

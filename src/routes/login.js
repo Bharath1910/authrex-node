@@ -34,10 +34,6 @@ async function main(req, res, prisma) {
  */
 async function user(req, res, prisma, bcrypt, jwt) {
   const {username, password} = req.body;
-  if (!username || !password) {
-    res.status(StatusCodes.BAD_REQUEST).send({});
-    return;
-  }
 
   const user = await prisma.users.findUnique({
     where: {username},
@@ -67,10 +63,6 @@ async function user(req, res, prisma, bcrypt, jwt) {
  */
 async function client(req, res, prisma, bcrypt, jwt) {
   const {username, password} = req.body;
-  if (!username || !password) {
-    res.status(StatusCodes.BAD_REQUEST).send({});
-    return;
-  }
 
   const user = await prisma.clients.findUnique({
     where: {username, usersId: req.user.id},
