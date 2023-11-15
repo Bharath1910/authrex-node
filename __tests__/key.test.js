@@ -1,4 +1,4 @@
-const {generateApiKey, main} = require('../src/routes/token');
+const {generateApiKey, main} = require('../src/routes/key');
 const crypto = require('crypto');
 const {PrismaClient} = require('@prisma/client');
 const {StatusCodes} = require('http-status-codes');
