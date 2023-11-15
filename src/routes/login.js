@@ -51,7 +51,7 @@ async function user(req, res, prisma, bcrypt, jwt) {
   }
 
   const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
-  res.status(StatusCodes.OK).send({token});
+  res.status(StatusCodes.OK).send({token, id: user.id});
 };
 
 /**
