@@ -4,6 +4,8 @@ const cors = require('cors');
 const {main: signup} = require('./routes/signup');
 const {main: login} = require('./routes/login');
 const {main: verifyUser} = require('./middleware/verify-user');
+const {main: key} = require('./routes/key');
+const {main: verifyAuth} = require('./middleware/verify-token');
 const verifyUserPwd = require('./middleware/verify-inputs');
 
 const app = express();
@@ -19,6 +21,11 @@ app.post('/signup',
 app.post('/login',
     verifyUserPwd, verifyUser(prisma),
     (req, res) => login(req, res, prisma),
+);
+
+app.get('/key',
+    verifyAuth,
+    (req, res) => key(req, res, prisma),
 );
 
 app.listen(5000, () => console.log('Server is running on port 5000'));
