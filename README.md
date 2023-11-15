@@ -11,7 +11,7 @@ for getting the login options of a specified user
 - [ ] `/redirect`
 fetches the redirect url of the specified user
 - [ ] `/token` generates a temporary token for the login process
-- [X] `key` generates a new API key for the user
+- [X] `/key` generates a new API key for the user
 
 # Design Decisions
 1. Using postgresql as the database
@@ -53,4 +53,4 @@ Now the login page will get client's login information and the temporary token f
 4. Server sends a JWT token to the callback url of the user
 
 ## API key generation
-The `/key` routes lets an user to generate or refresh their API key, which is used by the SDK to authenticate the user. The API key is stored in the database.
+The `/key` routes lets an user to generate or refresh their API key, the key is 16 bytes hex string which is used by the SDK to authenticate the user. The API key is stored in the database.
