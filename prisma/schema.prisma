@@ -17,6 +17,7 @@ model users {
   client    clients[]
   methods   String[]
   clientsId String?
+  apiKey    String?
 }
 
 model clients {
