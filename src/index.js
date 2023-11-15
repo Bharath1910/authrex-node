@@ -1,11 +1,13 @@
 const express = require('express');
 const prisma = require('./utils/prisma');
+const redis = require('./utils/redis');
 const cors = require('cors');
 const {main: signup} = require('./routes/signup');
 const {main: login} = require('./routes/login');
 const {main: verifyUser} = require('./middleware/verify-user');
 const {main: key} = require('./routes/key');
 const {main: verifyAuth} = require('./middleware/verify-token');
+const {main: token} = require('./routes/token');
 const verifyUserPwd = require('./middleware/verify-inputs');
 
 const app = express();
@@ -26,6 +28,11 @@ app.post('/login',
 app.get('/key',
     verifyAuth,
     (req, res) => key(req, res, prisma),
+);
+
+app.get('/token',
+    verifyAuth, verifyUser(prisma),
+    (req, res) => token(req, res, redis),
 );
 
 app.listen(5000, () => console.log('Server is running on port 5000'));
