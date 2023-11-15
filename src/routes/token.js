@@ -30,7 +30,7 @@ async function main(req, res, prisma) {
   const type = req.query.t;
 
   if (type === 'generate') {
-    await generateToken(req, res, prisma);
+    await generateApiKey(req, res, prisma);
     return;
   }
 
