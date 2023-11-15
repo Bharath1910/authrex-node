@@ -10,7 +10,7 @@ const crypto = require('crypto');
  * @param {express.Response} res
  * @param {prisma} prisma
  */
-async function generateToken(req, res, prisma) {
+async function generateApiKey(req, res, prisma) {
   const token = crypto.randomBytes(16).toString('hex');
   await prisma.users.update({
     where: {id: req.userId},
@@ -31,7 +31,10 @@ async function main(req, res, prisma) {
 
   if (type === 'generate') {
     await generateToken(req, res, prisma);
+    return;
   }
+
+  res.status(StatusCodes.BAD_REQUEST).send({message: 'Invalid type'});
 }
 
-module.exports = {main};
+module.exports = {main, generateApiKey};
