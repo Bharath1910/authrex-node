@@ -6,10 +6,8 @@ An authentication as a service provider made using express and postgresql. This 
 for signing up a new user or a new client
 - [x] `/login`
 for logging in a user or a client
-- [ ] `/options`
+- [x] `/user`
 for getting the login options of a specified user
-- [ ] `/redirect`
-fetches the redirect url of the specified user
 - [x] `/token` generates a temporary token for the login process
 - [X] `/key` generates a new API key for the user
 
