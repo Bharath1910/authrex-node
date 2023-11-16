@@ -20,6 +20,19 @@ async function generateApiKey(req, res, prisma) {
   res.status(StatusCodes.OK).send({token});
 }
 
+/**
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {prisma} prisma
+ */
+async function getApiKey(req, res, prisma) {
+  const user = await prisma.users.findUnique({
+    where: {id: req.userId},
+    select: {apiKey: true},
+  });
+
+  res.status(StatusCodes.OK).send({token: user.apiKey});
+}
 
 /**
  * @param {express.Request} req
@@ -34,7 +47,12 @@ async function main(req, res, prisma) {
     return;
   }
 
+  if (type === 'get') {
+    await getApiKey(req, res, prisma);
+    return;
+  }
+
   res.status(StatusCodes.BAD_REQUEST).send({message: 'Invalid type'});
 }
 
-module.exports = {main, generateApiKey};
+module.exports = {main, generateApiKey, getApiKey};

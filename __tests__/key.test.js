@@ -1,4 +1,4 @@
-const {generateApiKey, main} = require('../src/routes/key');
+const {generateApiKey, main, getApiKey} = require('../src/routes/key');
 const crypto = require('crypto');
 const {PrismaClient} = require('@prisma/client');
 const {StatusCodes} = require('http-status-codes');
@@ -29,5 +29,15 @@ describe('API Key test cases', () => {
     expect(crypto.randomBytes).toHaveBeenCalledTimes(1);
     expect(prisma.users.update).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+  });
+
+  it('should fetch the token', async () => {
+    prisma.users = {findUnique: jest.fn(() => {
+      return {apiKey: '123'};
+    })};
+    await getApiKey(req, res, prisma);
+    expect(prisma.users.findUnique).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+    expect(res.send).toHaveBeenCalledWith({token: '123'});
   });
 });
