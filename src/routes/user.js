@@ -86,4 +86,4 @@ async function user(req, res, prisma) {
   }
 }
 
-module.exports = {user, updateRedirect, updateOptions};
+module.exports = {user, updateRedirect, updateOptions, parseOptions};
