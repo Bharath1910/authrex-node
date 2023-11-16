@@ -10,7 +10,6 @@ const {StatusCodes} = require('http-status-codes');
  * @param {prisma} prisma
 */
 async function updateRedirect(req, res, prisma) {
-  console.log(req.query.redirect);
   if (!req.query.redirect) {
     return;
   }
@@ -32,8 +31,11 @@ function parseOptions(options) {
   const parsedOptions = options.split(',');
   const validOptions = ['username', 'pgp'];
 
-  parsedOptions.filter((option) => validOptions.includes(option));
-  if (parsedOptions.length === 0) {
+  const returnOptions = parsedOptions.filter((option) => {
+    return validOptions.includes(option);
+  });
+
+  if (returnOptions.length === 0) {
     throw new Error('Invalid options');
   }
 
@@ -46,22 +48,14 @@ function parseOptions(options) {
  * @param {prisma} prisma
 */
 async function updateOptions(req, res, prisma) {
-  console.log(req.query.options);
   if (!req.query.options) {
     return;
   }
 
-  try {
-    parseOptions(req.query.options);
-  } catch (err) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      error: err.message,
-    });
-  }
-
+  const methods = parseOptions(req.query.options);
   await prisma.users.update({
     where: {id: req.userId},
-    data: {options: req.query.options},
+    data: {methods},
   });
 
   return;
@@ -81,9 +75,15 @@ async function user(req, res, prisma) {
     });
   };
 
-  await updateRedirect(req, res, prisma);
-  await updateOptions(req, res, prisma);
-  res.status(StatusCodes.NO_CONTENT).json({});
+  try {
+    await updateRedirect(req, res, prisma);
+    await updateOptions(req, res, prisma);
+    res.status(StatusCodes.NO_CONTENT).json({});
+  } catch (err) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: err.message,
+    });
+  }
 }
 
 module.exports = {user, updateRedirect, updateOptions};
