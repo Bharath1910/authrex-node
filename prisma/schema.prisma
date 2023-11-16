@@ -16,6 +16,7 @@ model users {
   password  String
   client    clients[]
   methods   String[]
+  redirect  String?
   clientsId String?
   apiKey    String?
 }

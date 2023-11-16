@@ -65,23 +65,24 @@ async function user(req, res, prisma, bcrypt, jwt) {
 async function client(req, res, prisma, bcrypt, jwt) {
   const {username, password} = req.body;
 
-  const user = await prisma.clients.findUnique({
+  const client = await prisma.clients.findUnique({
     where: {username, usersId: req.user.id},
+    include: {users: {select: {redirect: true}}},
   });
 
-  if (!user) {
+  if (!client) {
     res.status(StatusCodes.NOT_FOUND).send();
     return;
   }
 
-  const match = await bcrypt.compare(password, user.password);
+  const match = await bcrypt.compare(password, client.password);
   if (!match) {
     res.status(StatusCodes.UNAUTHORIZED).send();
     return;
   }
 
-  const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
-  res.status(StatusCodes.OK).send({token});
+  const token = jwt.sign({id: client.id}, process.env.JWT_SECRET);
+  res.status(StatusCodes.OK).send({token, redirect: client.users.redirect});
 };
 
 module.exports = {main, user, client};

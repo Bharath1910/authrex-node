@@ -8,6 +8,7 @@ const {main: verifyUser} = require('./middleware/verify-user');
 const {main: key} = require('./routes/key');
 const {main: verifyAuth} = require('./middleware/verify-token');
 const {main: token} = require('./routes/token');
+const {user} = require('./routes/user');
 const verifyUserPwd = require('./middleware/verify-inputs');
 
 const app = express();
@@ -33,6 +34,11 @@ app.get('/key',
 app.get('/token',
     verifyAuth, verifyUser(prisma, redis),
     (req, res) => token(req, res, redis),
+);
+
+app.post('/user',
+    verifyAuth,
+    (req, res) => user(req, res, prisma),
 );
 
 app.listen(5000, () => console.log('Server is running on port 5000'));

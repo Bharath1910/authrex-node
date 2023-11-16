@@ -89,7 +89,9 @@ describe('login', () => {
     req.body.username = 'test';
     req.body.password = 'test';
 
-    const prisma = {clients: {findUnique: jest.fn(() => 'test')}};
+    const prisma = {clients: {findUnique: jest.fn(() => {
+      return {users: {redirect: 'test'}};
+    })}};
     const bcrypt = {compare: jest.fn(() => true)};
     const jwt = {sign: jest.fn(() => 'token')};
     await client(req, res, prisma, bcrypt, jwt);
