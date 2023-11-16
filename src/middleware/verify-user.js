@@ -2,13 +2,16 @@
 const prisma = require('../utils/prisma');
 // eslint-disable-next-line no-unused-vars
 const express = require('express');
+// eslint-disable-next-line no-unused-vars
+const redis = require('../utils/redis');
 const {StatusCodes} = require('http-status-codes');
 
 /**
  * @param {prisma} prisma
+ * @param {redis} redis
  * @return {function}
  */
-function main(prisma) {
+function main(prisma, redis) {
   /**
    * @param {express.Request} req
    * @param {express.Response} res
@@ -20,14 +23,24 @@ function main(prisma) {
       return;
     }
 
-    const {uid} = req.query;
-    if (!uid) {
+    const {token} = req.query;
+    if (!token) {
       res.status(StatusCodes.BAD_REQUEST).send({});
       return;
     }
 
+    await redis.connect();
+    const userId = await redis.get(token);
+    await redis.disconnect();
+
+    if (!userId) {
+      res.status(StatusCodes.UNAUTHORIZED)
+          .send({message: 'token expired, please login again'});
+      return;
+    }
+
     const user = await prisma.users.findUnique({
-      where: {id: uid},
+      where: {id: userId},
     });
 
     if (!user) {

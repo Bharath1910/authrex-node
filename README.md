@@ -10,7 +10,7 @@ for logging in a user or a client
 for getting the login options of a specified user
 - [ ] `/redirect`
 fetches the redirect url of the specified user
-- [ ] `/token` generates a temporary token for the login process
+- [x] `/token` generates a temporary token for the login process
 - [X] `/key` generates a new API key for the user
 
 # Design Decisions
@@ -19,7 +19,7 @@ fetches the redirect url of the specified user
 3. JSDocs for type inference
 4. ESLint for code formatting
 5. Jest for unit testing
-6. Redis for token storage (tentative)
+6. Redis for token storage
 
 ---
 ## User signup and login 
@@ -32,7 +32,7 @@ Login route returns a JWT token which contains user id in it. This token is used
 
 I decided to add a new middleware called `verifyUser` to check if the incoming api request from a client is linked to a real user or not. I decided to use a middleware because this process of verifying a valid user is done in multiple client routes.
 
-## Client signup and login (tentative process)
+## Client signup and login
 
 When a client wants to signup or login, they must be initiated by an user. The user must request for a temporary token from the server in order to initiate the client signup/login process. The token generation process goes like this:
 
