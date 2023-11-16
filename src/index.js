@@ -16,12 +16,12 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/signup',
-    verifyUserPwd, verifyUser(prisma),
+    verifyUserPwd, verifyUser(prisma, redis),
     (req, res) => signup(req, res, prisma),
 );
 
 app.post('/login',
-    verifyUserPwd, verifyUser(prisma),
+    verifyUserPwd, verifyUser(prisma, redis),
     (req, res) => login(req, res, prisma),
 );
 
@@ -31,7 +31,7 @@ app.get('/key',
 );
 
 app.get('/token',
-    verifyAuth, verifyUser(prisma),
+    verifyAuth, verifyUser(prisma, redis),
     (req, res) => token(req, res, redis),
 );
 

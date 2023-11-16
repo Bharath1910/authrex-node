@@ -32,15 +32,17 @@ describe('verify existence of user', () => {
     expect(res.send).toHaveBeenCalledWith({});
   });
 
-  it('should return 404 if user is not found', async () => {
-    req.query.uid = 'abc';
-    mockPrisma.users = {
-      findUnique: jest.fn().mockResolvedValue(null),
+  it('should return 404 if token expires', async () => {
+    req.query.token = 'abc';
+    const redis = {
+      connect: jest.fn(),
+      get: jest.fn().mockReturnValue(null),
+      disconnect: jest.fn(),
     };
 
-    const middleware = main(mockPrisma);
+    const middleware = main(mockPrisma, redis);
     await middleware(req, res, next);
-    expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
-    expect(res.send).toHaveBeenCalledWith({});
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED);
+    expect(res.send).toHaveBeenCalledTimes(1);
   });
 });
