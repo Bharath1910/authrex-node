@@ -27,16 +27,24 @@ function verifyToken(prisma, verifyKey) {
 
     const token = header.split(' ')[1];
     if (verifyKey) {
+      if (!req.query.id) {
+        res.status(StatusCodes.BAD_REQUEST)
+            .send({message: 'Send client id.'});
+        return;
+      }
+
       user = await prisma.users.findUnique({
         where: {
-          id: req.userId,
+          id: req.query.id,
         },
         select: {
           apiKey: true,
+          id: true,
         },
       });
 
       if (user.apiKey === token) {
+        req.userId = user.id;
         next();
         return;
       }
