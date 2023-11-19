@@ -8,6 +8,7 @@ const {main: verifyUser} = require('./middleware/verify-user');
 const {main: key} = require('./routes/key');
 const {main: verifyAuth} = require('./middleware/verify-token');
 const {main: token} = require('./routes/token');
+const getUser = require('./routes/get-user');
 const {rateLimiter} = require('./middleware/ratelimiter');
 const {user} = require('./routes/user');
 const verifyUserPwd = require('./middleware/verify-inputs');
@@ -42,6 +43,11 @@ app.get('/token',
 app.post('/user',
     verifyAuth,
     (req, res) => user(req, res, prisma),
+);
+
+app.get('/user',
+    verifyAuth(prisma),
+    (req, res) => getUser(req, res, prisma),
 );
 
 try {
