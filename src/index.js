@@ -27,12 +27,12 @@ app.post('/login',
 );
 
 app.get('/key',
-    verifyAuth,
+    verifyAuth(prisma),
     (req, res) => key(req, res, prisma),
 );
 
 app.get('/token',
-    verifyAuth, verifyUser(prisma, redis),
+    verifyAuth(prisma, true),
     (req, res) => token(req, res, redis),
 );
 
