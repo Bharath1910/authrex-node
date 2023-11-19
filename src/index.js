@@ -8,6 +8,7 @@ const {main: verifyUser} = require('./middleware/verify-user');
 const {main: key} = require('./routes/key');
 const {main: verifyAuth} = require('./middleware/verify-token');
 const {main: token} = require('./routes/token');
+const {rateLimiter} = require('./middleware/ratelimiter');
 const {user} = require('./routes/user');
 const verifyUserPwd = require('./middleware/verify-inputs');
 
@@ -15,6 +16,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(rateLimiter(redis));
 
 app.post('/signup',
     verifyUserPwd, verifyUser(prisma, redis),
