@@ -16,9 +16,10 @@ function wrapper(redis) {
    */
   return async function rateLimiter(req, res, next) {
     await redis.connect();
-    const requests = await redis.get(req.ip);
+    const ip = req.headers.ip;
+    const requests = await redis.get(ip);
     if (requests === null) {
-      await redis.set(req.ip, 1, {EX: 10});
+      await redis.set(ip, 1, {EX: 10});
       await redis.disconnect();
       next();
       return;
@@ -33,7 +34,7 @@ function wrapper(redis) {
       return;
     }
 
-    await redis.incr(req.ip);
+    await redis.incr(ip);
     await redis.disconnect();
     next();
   };
