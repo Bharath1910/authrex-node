@@ -13,6 +13,7 @@ const {user} = require('./routes/user');
 const verifyUserPwd = require('./middleware/verify-inputs');
 
 const app = express();
+redis.connect();
 
 app.use(cors());
 app.use(express.json());
@@ -43,4 +44,9 @@ app.post('/user',
     (req, res) => user(req, res, prisma),
 );
 
-app.listen(5000, () => console.log('Server is running on port 5000'));
+try {
+  app.listen(5000, () => console.log('Server is running on port 5000'));
+} catch (err) {
+  console.log(err);
+  redis.disconnect();
+}

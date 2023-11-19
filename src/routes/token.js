@@ -14,10 +14,7 @@ const crypto = require('crypto');
  */
 async function main(req, res, redis) {
   const token = crypto.randomBytes(32).toString('hex');
-
-  await redis.connect();
   await redis.set(token, req.userId, {EX: 5 * 60, NX: true});
-  await redis.disconnect();
 
   res.status(StatusCodes.OK).send({token});
 }
