@@ -17,7 +17,7 @@ describe('verifyToken middleware', () => {
     next = jest.fn();
   });
 
-  test('should pass with a valid token', () => {
+  test('should pass with a valid token', async () => {
     const token = 'valid_token';
     req.headers['authorization'] = `Bearer ${token}`;
     const decodedToken = {id: 'user_id'};
@@ -26,7 +26,8 @@ describe('verifyToken middleware', () => {
       callback(null, decodedToken);
     });
 
-    verifyToken(req, res, next);
+    const mid = verifyToken(verifyKey=false);
+    await mid(req, res, next);
 
     expect(jwt.verify).toHaveBeenCalledWith(
         token,
@@ -37,15 +38,16 @@ describe('verifyToken middleware', () => {
     expect(next).toHaveBeenCalled();
   });
 
-  test('should return UNAUTHORIZED with no token provided', () => {
-    verifyToken(req, res, next);
+  test('should return UNAUTHORIZED with no token provided', async () => {
+    const mid = verifyToken(verifyKey=false);
+    await mid(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED);
     expect(res.send).toHaveBeenCalledWith({message: 'No token provided.'});
     expect(next).not.toHaveBeenCalled();
   });
 
-  test('should return UNAUTHORIZED with invalid token', () => {
+  test('should return UNAUTHORIZED with invalid token', async () => {
     const token = 'invalid_token';
     req.headers['authorization'] = `Bearer ${token}`;
 
@@ -53,7 +55,8 @@ describe('verifyToken middleware', () => {
       callback(new Error('Invalid token'));
     });
 
-    verifyToken(req, res, next);
+    const mid = verifyToken(verifyKey=false);
+    await mid(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED);
     expect(res.send).toHaveBeenCalledWith({message: 'Unauthorized.'});
