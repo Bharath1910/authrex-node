@@ -29,10 +29,7 @@ function main(prisma, redis) {
       return;
     }
 
-    await redis.connect();
     const userId = await redis.get(token);
-    await redis.disconnect();
-
     if (!userId) {
       res.status(StatusCodes.UNAUTHORIZED)
           .send({message: 'token expired, please login again'});

@@ -2,6 +2,7 @@
 const express = require('express');
 // eslint-disable-next-line no-unused-vars
 const prisma = require('../utils/prisma');
+const {StatusCodes} = require('http-status-codes');
 
 /**
  * @param {express.Request} req
@@ -19,7 +20,7 @@ async function getUser(req, res, prisma) {
     },
   });
 
-  res.status(200).send(users);
+  res.status(StatusCodes.OK).send(users);
 }
 
 module.exports = getUser;

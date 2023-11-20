@@ -19,7 +19,6 @@ function verifyToken(prisma, verifyKey) {
   return async (req, res, next) => {
     const header = req.headers['authorization'];
     if (!header) {
-      console.log(res.status().send());
       res.status(StatusCodes.UNAUTHORIZED)
           .send({message: 'No token provided.'});
       return;
